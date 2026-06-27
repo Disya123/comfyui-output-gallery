@@ -19,10 +19,15 @@ _LOGGER = logging.getLogger(__name__)
 
 
 def get_extension_root() -> str:
-    """Return the extension's root directory (parent of ``py``)."""
+    """Return the extension's root directory.
 
-    # py/settings_paths.py -> py -> <root>
-    return os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    This file lives at ``<root>/ogallery/settings_paths.py``, so two
+    ``dirname`` calls climb back to ``<root>``.
+    """
+
+    # __file__ = <root>/ogallery/settings_paths.py
+    # two dirname() calls climb back to <root>.
+    return os.path.dirname(os.path.dirname(__file__))
 
 
 def _portable_settings_path() -> str:

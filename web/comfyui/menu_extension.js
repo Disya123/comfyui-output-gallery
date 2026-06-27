@@ -5,6 +5,10 @@ import { app } from "../../scripts/app.js";
 
 const BUTTON_TOOLTIP = "Output Gallery";
 
+// Inline SVG icon — avoids depending on ComfyUI's iconify CSS being loaded,
+// so the icon renders even when the iconify stylesheet is unavailable.
+const GALLERY_ICON_SVG = '<img src="/ogallery/assets/logo.png" style="width: 1em; height: 1em; object-fit: contain; vertical-align: middle;">';
+
 function openGallery() {
     window.open("/gallery", "_blank");
 }
@@ -30,7 +34,7 @@ const extension = {
 if (supportsActionBarButtons()) {
     extension.actionBarButtons = [
         {
-            icon: "icon-[mdi--image-multiple] size-4",
+            icon: GALLERY_ICON_SVG,
             tooltip: BUTTON_TOOLTIP,
             onClick: openGallery,
         },
@@ -47,7 +51,7 @@ async function attachLegacyMenuButton() {
                 return false;
             }
             const button = new ComfyButton({
-                icon: "image-multiple",
+                icon: GALLERY_ICON_SVG,
                 tooltip: BUTTON_TOOLTIP,
                 action: openGallery,
             });
