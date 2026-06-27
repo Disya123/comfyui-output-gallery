@@ -7,7 +7,7 @@ const BUTTON_TOOLTIP = "Output Gallery";
 
 // Inline SVG icon — avoids depending on ComfyUI's iconify CSS being loaded,
 // so the icon renders even when the iconify stylesheet is unavailable.
-const GALLERY_ICON_SVG = '<img src="/ogallery/assets/logo.png" style="width: 1em; height: 1em; object-fit: contain; vertical-align: middle;">';
+const GALLERY_ICON_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><image href="/ogallery/assets/logo.png" width="24" height="24" preserveAspectRatio="xMidYMid meet" /></svg>';
 
 function openGallery() {
     window.open("/gallery", "_blank");
