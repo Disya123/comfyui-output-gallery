@@ -34,7 +34,7 @@ const extension = {
 if (supportsActionBarButtons()) {
     extension.actionBarButtons = [
         {
-            icon: GALLERY_ICON_SVG,
+            icon: "icon-[mdi--image-multiple] size-4",
             tooltip: BUTTON_TOOLTIP,
             onClick: openGallery,
         },
