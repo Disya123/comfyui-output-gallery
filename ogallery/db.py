@@ -416,9 +416,13 @@ def _fts_query(query: str) -> str:
     query = (query or "").strip()
     if not query:
         return ""
-    # Quote each token so punctuation/separators don't break the MATCH parser.
+    
+    import re
+    # Replace punctuation with spaces to allow exact word matching
+    query = re.sub(r'[^\w\s]', ' ', query)
     tokens = [t for t in query.split() if t]
-    quoted = ['"' + t.replace('"', '""') + '"' for t in tokens]
+    # Use prefix match for better search
+    quoted = ['"' + t.replace('"', '""') + '"*' for t in tokens]
     return " ".join(quoted)
 
 

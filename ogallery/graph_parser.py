@@ -123,8 +123,7 @@ def _is_link(value: Any) -> bool:
     return (
         isinstance(value, (list, tuple))
         and len(value) == 2
-        and isinstance(value[0], str)
-        and value[0].isdigit()
+        and isinstance(value[0], (str, int))
     )
 
 

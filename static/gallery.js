@@ -45,6 +45,9 @@ const modalTags = el("modal-tags");
 const modalFavorite = el("modal-favorite");
 const tagForm = el("tag-form");
 const tagInput = el("tag-input");
+const gridSizeSlider = el("grid-size");
+const modalZoomBtn = el("modal-zoom-btn");
+const modalMediaContainer = el("modal-media-container");
 
 let searchTimer = null;
 
@@ -78,6 +81,28 @@ function init() {
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeModal();
     });
+
+    // Zoom handlers
+    if (modalZoomBtn) {
+        const toggleZoom = () => {
+            modalMediaContainer.classList.toggle("zoomed");
+        };
+        modalZoomBtn.addEventListener("click", toggleZoom);
+        modalImg.addEventListener("click", toggleZoom);
+    }
+
+    // Grid size handler
+    if (gridSizeSlider) {
+        const savedSize = localStorage.getItem("ogallery-grid-size");
+        if (savedSize) {
+            gridSizeSlider.value = savedSize;
+            document.documentElement.style.setProperty('--grid-size', savedSize + 'px');
+        }
+        gridSizeSlider.addEventListener("input", () => {
+            document.documentElement.style.setProperty('--grid-size', gridSizeSlider.value + 'px');
+            localStorage.setItem("ogallery-grid-size", gridSizeSlider.value);
+        });
+    }
 
     // Copy buttons.
     document.querySelectorAll(".copy").forEach((btn) => {
@@ -265,6 +290,7 @@ function closeModal() {
     modal.hidden = true;
     document.body.style.overflow = "";
     state.currentImage = null;
+    modalMediaContainer.classList.remove("zoomed");
 }
 
 function renderModal() {

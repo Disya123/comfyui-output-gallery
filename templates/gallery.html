@@ -10,7 +10,10 @@
     <div id="app">
         <header class="toolbar">
             <div class="toolbar__left">
-                <h1 class="title">🖼️ Output Gallery</h1>
+                <div class="logo-container">
+                    <img src="{{ assets_url }}/logo.png" alt="Logo" class="logo-img" />
+                    <h1 class="title">Output Gallery</h1>
+                </div>
                 <span class="stats" id="stats" data-state="loading">loading…</span>
             </div>
             <div class="toolbar__center">
@@ -31,6 +34,10 @@
                     <input id="favorite-only" type="checkbox" />
                     <span>★ Favorites</span>
                 </label>
+                <div class="grid-slider-container">
+                    <span class="grid-slider-icon">▦</span>
+                    <input id="grid-size" type="range" min="100" max="600" value="180" class="slider" title="Thumbnail Size" />
+                </div>
             </div>
             <div class="toolbar__right">
                 <div id="tag-filter" class="tag-filter" hidden>
@@ -56,9 +63,10 @@
     <div id="modal" class="modal" hidden>
         <div class="modal__backdrop" data-close></div>
         <div class="modal__card" role="dialog" aria-modal="true">
-            <button class="modal__close" data-close>✕</button>
-            <div class="modal__media">
+            <button class="modal__close" data-close title="Close">✕</button>
+            <div class="modal__media" id="modal-media-container">
                 <img id="modal-img" alt="" />
+                <button id="modal-zoom-btn" class="btn btn--icon modal-zoom-btn" title="Toggle zoom">🔍</button>
             </div>
             <div class="modal__body">
                 <div class="modal__header">
