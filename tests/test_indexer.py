@@ -61,6 +61,17 @@ def test_search_finds_image_by_positive_prompt(comfy_graph_png, a1111_png):
     assert "cat" in result["items"][0]["positive"]
 
 
+def test_search_substring_matches_across_token_boundaries(comfy_graph_png, a1111_png):
+    """Searching for 'girl' should find images with '1girl' in the prompt."""
+    indexer.scan_once()
+
+    result = db.query_images(query="girl", page=1, limit=10)
+    assert result["total"] == 1, (
+        f"Expected 1 result for 'girl' (matching '1girl'), got {result['total']}"
+    )
+    assert "1girl" in result["items"][0]["positive"]
+
+
 def test_reindex_skips_unchanged_files(comfy_graph_png):
     first = indexer.scan_once()
     assert first["added"] == 1

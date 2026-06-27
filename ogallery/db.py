@@ -266,8 +266,15 @@ def query_images(
 
     fts_available = _fts_available(conn)
     if query and fts_available:
-        where.append("i.rowid IN (SELECT rowid FROM images_fts WHERE images_fts MATCH ?)")
-        params.append(_fts_query(query))
+        # FTS5 prefix match for fast exact-token search, plus LIKE fallback
+        # for substring matches across token boundaries (e.g. "girl" → "1girl").
+        fts_q = _fts_query(query)
+        like = f"%{query}%"
+        where.append(
+            "(i.rowid IN (SELECT rowid FROM images_fts WHERE images_fts MATCH ?)"
+            " OR i.positive LIKE ? OR i.negative LIKE ?)"
+        )
+        params.extend([fts_q, like, like])
     elif query:
         # Fallback: LIKE search when FTS5 is missing.
         like = f"%{query}%"
