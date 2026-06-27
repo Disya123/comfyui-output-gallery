@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ComfyUI Output Gallery</title>
+    <link rel="stylesheet" href="{{ assets_url }}/gallery.css" />
+</head>
+<body>
+    <div id="app">
+        <header class="toolbar">
+            <div class="toolbar__left">
+                <h1 class="title">🖼️ Output Gallery</h1>
+                <span class="stats" id="stats" data-state="loading">loading…</span>
+            </div>
+            <div class="toolbar__center">
+                <input
+                    id="search"
+                    class="search"
+                    type="search"
+                    placeholder="Search prompts…"
+                    autocomplete="off"
+                />
+                <select id="sort" class="select">
+                    <option value="date">Newest first</option>
+                    <option value="name">Name</option>
+                    <option value="size">File size</option>
+                    <option value="width">Width</option>
+                </select>
+                <label class="check">
+                    <input id="favorite-only" type="checkbox" />
+                    <span>★ Favorites</span>
+                </label>
+            </div>
+            <div class="toolbar__right">
+                <div id="tag-filter" class="tag-filter" hidden>
+                    <span class="tag-filter__label">Tag:</span>
+                    <span id="tag-filter__chip" class="chip chip--active"></span>
+                    <button id="tag-filter__clear" class="chip chip--close" title="Clear">✕</button>
+                </div>
+                <button id="reindex" class="btn" title="Rebuild index">⟳ Refresh</button>
+            </div>
+        </header>
+
+        <div id="tagbar" class="tagbar"></div>
+
+        <main id="grid" class="grid" aria-live="polite"></main>
+
+        <div id="sentinel" class="sentinel"></div>
+
+        <div id="empty" class="empty" hidden>
+            <p>No images yet. Generate something in ComfyUI, then hit Refresh.</p>
+        </div>
+    </div>
+
+    <div id="modal" class="modal" hidden>
+        <div class="modal__backdrop" data-close></div>
+        <div class="modal__card" role="dialog" aria-modal="true">
+            <button class="modal__close" data-close>✕</button>
+            <div class="modal__media">
+                <img id="modal-img" alt="" />
+            </div>
+            <div class="modal__body">
+                <div class="modal__header">
+                    <h2 id="modal-name" class="modal__name"></h2>
+                    <button id="modal-favorite" class="btn btn--icon" title="Toggle favorite">☆</button>
+                </div>
+                <div id="modal-meta" class="modal__meta"></div>
+
+                <section class="block">
+                    <h3 class="block__title">Positive prompt</h3>
+                    <pre id="modal-positive" class="prompt prompt--pos"></pre>
+                    <button class="copy" data-copy-target="modal-positive">Copy</button>
+                </section>
+
+                <section class="block" id="negative-block" hidden>
+                    <h3 class="block__title">Negative prompt</h3>
+                    <pre id="modal-negative" class="prompt prompt--neg"></pre>
+                    <button class="copy" data-copy-target="modal-negative">Copy</button>
+                </section>
+
+                <section class="block">
+                    <h3 class="block__title">Tags</h3>
+                    <div class="tagrow">
+                        <div id="modal-tags" class="chips"></div>
+                        <form id="tag-form" class="tag-form">
+                            <input id="tag-input" type="text" placeholder="add tag…" />
+                            <button class="btn btn--sm" type="submit">Add</button>
+                        </form>
+                    </div>
+                </section>
+
+                <details class="block">
+                    <summary class="block__title">Raw JSON (prompt / workflow)</summary>
+                    <pre id="modal-raw" class="raw"></pre>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="{{ assets_url }}/gallery.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+[project]
+name = "comfyui-output-gallery"
+description = "A gallery/viewer for generated images in ComfyUI's output folder, with prompts, resolution, full-text search, tags and favorites."
+version = "0.1.0"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+dependencies = [
+    "Pillow",
+    "piexif",
+    "jinja2",
+    "platformdirs",
+]
+
+[project.urls]
+Repository = ""
+
+[tool.comfy]
+PublisherId = "local"
+DisplayName = "ComfyUI Output Gallery"
+Version = "0.1.0"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q --import-mode=importlib"
+# The extension root contains a ComfyUI entry-point __init__.py that performs
+# relative imports; keep pytest from collecting it as a test package.
+norecursedirs = [".venv", ".pytest_cache", "web", "static", "templates"]
