@@ -11,9 +11,11 @@ import logging
 import os
 import threading
 import time
+import concurrent.futures
 from typing import Iterable, Optional
 
 from . import config, db
+from .thumbnails import generate_background
 from .metadata_extractor import extract
 from .settings_paths import get_data_dir
 
@@ -22,6 +24,14 @@ _LOGGER = logging.getLogger(__name__)
 _scan_lock = threading.Lock()
 _scan_running = False
 _last_scan = 0.0
+
+_thumb_executor = concurrent.futures.ThreadPoolExecutor(
+    max_workers=3, thread_name_prefix="ogallery_thumbs"
+)
+
+def shutdown() -> None:
+    """Cleanly shut down the background thumbnail generator."""
+    _thumb_executor.shutdown(wait=False)
 
 
 def scan_once(max_depth: Optional[int] = None) -> dict:
@@ -106,6 +116,10 @@ def _scan_impl(max_depth: Optional[int]) -> dict:
             "indexed_at": time.time(),
         }
         db.upsert_image(record)
+        
+        # Dispatch background thumbnail generation
+        _thumb_executor.submit(generate_background, filename)
+
         if cached_mtime is None:
             added += 1
         else:

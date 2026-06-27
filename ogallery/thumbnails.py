@@ -45,6 +45,15 @@ def get_thumbnail_path(filename: str, width: int = 512) -> str:
     return f"{config.THUMBS_STATIC_URL}/{thumb_name}"
 
 
+def generate_background(filename: str, width: int = 512) -> None:
+    """Safe wrapper for background thumbnail generation."""
+    try:
+        get_thumbnail_path(filename, width)
+    except Exception as exc:
+        _LOGGER.debug("Background thumbnail generation failed for %s: %s", filename, exc)
+
+
+
 def _generate(src: str, dest: str, width: int) -> None:
     from PIL import Image  # type: ignore
 
@@ -54,11 +63,17 @@ def _generate(src: str, dest: str, width: int) -> None:
             ratio = width / float(img.width or 1)
             height = max(1, int(img.height * ratio))
             thumb = img.resize((width, height), Image.LANCZOS)
-            thumb.save(dest, format="WEBP", quality=80, method=2)
+            
+            # Write to a temporary file and atomic replace to avoid race conditions
+            tmp_dest = dest + ".tmp"
+            thumb.save(tmp_dest, format="WEBP", quality=80, method=2)
+            os.replace(tmp_dest, dest)
     except Exception as exc:
         _LOGGER.warning("Thumbnail generation failed for %s: %s", src, exc)
         # Fall back to a 1x1 transparent webp so the URL still resolves.
         try:
-            Image.new("RGB", (1, 1)).save(dest, format="WEBP")
+            tmp_dest = dest + ".tmp"
+            Image.new("RGB", (1, 1)).save(tmp_dest, format="WEBP")
+            os.replace(tmp_dest, dest)
         except Exception:
             raise

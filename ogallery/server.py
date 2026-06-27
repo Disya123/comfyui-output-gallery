@@ -107,7 +107,15 @@ def add_routes() -> None:
         except Exception as exc:  # pragma: no cover
             _LOGGER.warning("Initial gallery scan failed: %s", exc)
 
+    async def _on_cleanup(_app) -> None:
+        from . import indexer
+        try:
+            indexer.shutdown()
+        except Exception as exc:  # pragma: no cover
+            _LOGGER.warning("Gallery shutdown failed: %s", exc)
+
     app.on_startup.append(_on_startup)
+    app.on_cleanup.append(_on_cleanup)
 
 
 def _run_initial_scan() -> None:
