@@ -20,7 +20,7 @@ _LOGGER = logging.getLogger(__name__)
 _THUMB_EXT = ".webp"
 
 
-def get_thumbnail_path(filename: str, width: int = 320) -> str:
+def get_thumbnail_path(filename: str, width: int = 512) -> str:
     """Generate (if needed) and return the thumbnail's public URL.
 
     Raises ``FileNotFoundError`` if the source image does not exist.

@@ -3,18 +3,24 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ComfyUI Output Gallery</title>
+    <title>Output Gallery · ComfyUI</title>
+    <meta name="description" content="Browse, search and organize images generated in ComfyUI — with prompts, metadata, tags and favorites." />
+    <meta property="og:title" content="ComfyUI Output Gallery" />
+    <meta property="og:description" content="Browse and organize your ComfyUI generations." />
+    <link rel="icon" href="{{ assets_url }}/logo.png" type="image/png" />
     <link rel="stylesheet" href="{{ assets_url }}/gallery.css" />
 </head>
 <body>
+    <a href="#grid" class="skip-link">Skip to gallery</a>
+
     <div id="app">
-        <header class="toolbar">
+        <header class="toolbar" role="banner">
             <div class="toolbar__left">
                 <div class="logo-container">
-                    <img src="{{ assets_url }}/logo.png" alt="Logo" class="logo-img" />
+                    <img src="{{ assets_url }}/logo.png" alt="Gallery" class="logo-img" width="22" height="22" />
                     <h1 class="title">Output Gallery</h1>
                 </div>
-                <span class="stats" id="stats" data-state="loading">loading…</span>
+                <span class="stats" id="stats" data-state="loading" aria-live="polite">Loading…</span>
             </div>
             <div class="toolbar__center">
                 <input
@@ -23,8 +29,9 @@
                     type="search"
                     placeholder="Search prompts…"
                     autocomplete="off"
+                    aria-label="Search prompts"
                 />
-                <select id="sort" class="select">
+                <select id="sort" class="select" aria-label="Sort order">
                     <option value="date">Newest first</option>
                     <option value="name">Name</option>
                     <option value="size">File size</option>
@@ -35,43 +42,49 @@
                     <span>★ Favorites</span>
                 </label>
                 <div class="grid-slider-container">
-                    <span class="grid-slider-icon">▦</span>
-                    <input id="grid-size" type="range" min="100" max="600" value="180" class="slider" title="Thumbnail Size" />
+                    <span class="grid-slider-icon" aria-hidden="true">▦</span>
+                    <input id="grid-size" type="range" min="100" max="600" value="180" class="slider" title="Thumbnail size" aria-label="Thumbnail size" />
                 </div>
             </div>
             <div class="toolbar__right">
                 <div id="tag-filter" class="tag-filter" hidden>
                     <span class="tag-filter__label">Tag:</span>
                     <span id="tag-filter__chip" class="chip chip--active"></span>
-                    <button id="tag-filter__clear" class="chip chip--close" title="Clear">✕</button>
+                    <button id="tag-filter__clear" class="chip chip--close" title="Clear tag filter" aria-label="Clear tag filter">✕</button>
                 </div>
-                <button id="reindex" class="btn" title="Rebuild index">⟳ Refresh</button>
+                <button id="reindex" class="btn btn--primary" title="Scan output folder for new images">⟳ Refresh</button>
             </div>
         </header>
 
-        <div id="tagbar" class="tagbar"></div>
+        <nav id="tagbar" class="tagbar" aria-label="Tag filters"></nav>
 
-        <main id="grid" class="grid" aria-live="polite"></main>
+        <main id="grid" class="grid" aria-live="polite" role="feed"></main>
 
-        <div id="sentinel" class="sentinel"></div>
+        <div id="sentinel" class="sentinel" aria-hidden="true"></div>
 
         <div id="empty" class="empty" hidden>
-            <p>No images yet. Generate something in ComfyUI, then hit Refresh.</p>
+            <span class="empty__icon" aria-hidden="true">▣</span>
+            <h2 class="empty__title">No images yet</h2>
+            <p class="empty__text">Generate something in ComfyUI, then hit <strong>Refresh</strong> to scan the output folder.</p>
+            <button id="empty-refresh" class="btn btn--primary empty__action">⟳ Refresh</button>
         </div>
     </div>
 
-    <div id="modal" class="modal" hidden>
+    <div id="modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-name">
         <div class="modal__backdrop" data-close></div>
-        <div class="modal__card" role="dialog" aria-modal="true">
-            <button class="modal__close" data-close title="Close">✕</button>
+        <div class="modal__card">
+            <button class="modal__close" data-close title="Close" aria-label="Close detail view">✕</button>
             <div class="modal__media" id="modal-media-container">
-                <img id="modal-img" alt="" />
-                <button id="modal-zoom-btn" class="btn btn--icon modal-zoom-btn" title="Toggle zoom">🔍</button>
+                <img id="modal-img" alt="Generation preview" />
+                <button id="modal-favorite" class="btn btn--icon modal-fav-btn" title="Toggle favorite" aria-label="Toggle favorite">☆</button>
+                <button id="modal-zoom-btn" class="btn btn--icon modal-zoom-btn" title="Toggle zoom" aria-label="Toggle zoom">⊕</button>
             </div>
             <div class="modal__body">
                 <div class="modal__header">
-                    <h2 id="modal-name" class="modal__name"></h2>
-                    <button id="modal-favorite" class="btn btn--icon" title="Toggle favorite">☆</button>
+                    <div>
+                        <h2 id="modal-name" class="modal__name"></h2>
+                        <div id="modal-filename" class="modal__filename"></div>
+                    </div>
                 </div>
                 <div id="modal-meta" class="modal__meta"></div>
 
@@ -92,14 +105,14 @@
                     <div class="tagrow">
                         <div id="modal-tags" class="chips"></div>
                         <form id="tag-form" class="tag-form">
-                            <input id="tag-input" type="text" placeholder="add tag…" />
+                            <input id="tag-input" type="text" placeholder="Add tag…" aria-label="New tag name" />
                             <button class="btn btn--sm" type="submit">Add</button>
                         </form>
                     </div>
                 </section>
 
                 <details class="block">
-                    <summary class="block__title">Raw JSON (prompt / workflow)</summary>
+                    <summary class="block__title">Raw JSON (prompt &amp; workflow)</summary>
                     <pre id="modal-raw" class="raw"></pre>
                 </details>
             </div>

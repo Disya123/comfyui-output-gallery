@@ -149,7 +149,7 @@ async def _handle_thumb(request):
     name = request.query.get("name")
     if not name:
         return _json({"success": False, "error": "name required"}, status=400)
-    width = _query_int(request, "w", 320)
+    width = _query_int(request, "w", 512)
     try:
         thumb_url = get_thumbnail_path(name, width)
     except FileNotFoundError:

@@ -196,7 +196,7 @@ def _row_to_summary(row: sqlite3.Row) -> dict:
     return {
         "filename": filename,
         "url": f"{_static_base()}/{filename}",
-        "thumb": f"/api/gallery/thumb?name={_quote(filename)}&w=320",
+        "thumb": f"/api/gallery/thumb?name={_quote(filename)}&w=512",
         "width": row["width"],
         "height": row["height"],
         "positive": row["positive"] or "",
